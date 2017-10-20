@@ -51,9 +51,15 @@ export default () => {
   app.use('/assets', Express.static(pathToStatic));
 
   app.get('/', 'root', (req, res) => {
-    const report = 'You must log in before you\'ll write posts!';
-    const message = req.session.nickname ? null : report;
-    res.render('index', { message });
+    res.render('index');
+  });
+
+  app.get('/users', (req, res) => {
+    Users.findAll().then((result) => {
+      // const result1 = result.get({ plain: true });
+      console.log(result, 'this is result!');
+      res.json(result);
+    });
   });
 
   app.get('/posts', 'posts', (req, res) => {
@@ -218,19 +224,19 @@ export default () => {
     res.redirect('/');
   });
 
-  app.use((req, res, next) => {
-    next(new NotFoundError());
-  });
+  // app.use((req, res, next) => {
+  //   next(new NotFoundError());
+  // });
 
-  app.use((err, req, res, next) => {
-    if (err.status === 404) {
-      res.status(404);
-      res.render('errorsPages/404');
-    } else {
-      res.status(500);
-      res.render('errorsPages/500');
-    }
-  });
+  // app.use((err, req, res, next) => {
+  //   if (err.status === 404) {
+  //     res.status(404);
+  //     res.render('errorsPages/404');
+  //   } else {
+  //     res.status(500);
+  //     res.render('errorsPages/500');
+  //   }
+  // });
 
   return app;
 };

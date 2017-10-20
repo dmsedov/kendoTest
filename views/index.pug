@@ -1,16 +1,6 @@
-extends ../layouts/app.pug
+extends ./layouts/app.pug
 
-  body
-    .logo
-      a(href=`${url('root')}`) main page
-    ul.nav-bar
-      if currentUser.isGuest()
-        li
-          a.sign-in-link(href=`${url('users.new')}`) Sign in
-        li
-          a.sign-up-link(href=`${url('session.new')}`) Sign up
-      else
-        form.form-sign-out(action=`${url('session')}?_method=DELETE` method='post')
-          input.button(type='submit' value='Sign out')
-        .admin-tool
-          a(href=`${url('my-posts')}`) My posts
+block content
+  div#example
+    div#grid
+    script(src='assets/js/client-widget.js')
