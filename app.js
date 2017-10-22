@@ -32,6 +32,7 @@ export default () => {
   router.registerAppHelpers(app);
   app.set('view engine', 'pug');
   app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json({}));
   app.use(methodOverride('_method'));
   app.use(cookieParser());
   const RedisStore = redis(session);
@@ -56,29 +57,29 @@ export default () => {
 
   app.get('/users', (req, res) => {
     Users.findAll().then((result) => {
-      // const result1 = result.get({ plain: true });
-      console.log(result, 'this is result!');
       res.json(result);
     });
   });
 
-  app.get('/posts', 'posts', (req, res) => {
-    Posts.findAll().then((posts) => {
-      res.render('Posts/listOfPosts', { posts });
-    });
+  app.post('/users/create', (req, res) => {
+    // console.log(req, 'request');
+    console.log(req.body, 'request');
+  });
+
+  app.put('/users/update', (req, res) => {
+    console.log(req.body, 'req update!');
   });
 
   app.get('/posts/new', 'posts.new', (req, res) => {
     res.render('Posts/new', { form: {} });
   });
 
-  app.get('/posts/:id', 'posts.id', (req, res, next) => {
-    const { id } = req.params;
-    Posts.findOne({ where: { post_id: id } }).then((result) => {
+  app.get('/posts', 'posts', (req, res, next) => {
+    Users.findAll().then((result) => {
       if (!result) {
         next(new NotFoundError());
       }
-      res.render('Posts/show', { post: result.get({ plain: true }) });
+      console.log(result.get({ plain: true }), '!!!!!!!');
     });
   });
 
