@@ -63,11 +63,25 @@ export default () => {
 
   app.post('/users/create', (req, res) => {
     // console.log(req, 'request');
-    console.log(req.body, 'request');
+    console.log(req.body, 'request post');
   });
 
   app.put('/users/update', (req, res) => {
-    console.log(req.body, 'req update!');
+    const promises = req.body.reduce((acc, user) => {
+      acc.push(new Promise((resolve, reject) => {
+        Users.update({
+          nickname: user.nickname,
+          age: user.age,
+          country: user.country,
+          company: user.company,
+        }, { where: { user_id: user.user_id } })
+        .then(data => resolve(data), err => reject(err));
+      }));
+      return acc;
+    }, []);
+    Promise.all(promises).then(values => {
+      res.json(...values);
+    });
   });
 
   app.get('/posts/new', 'posts.new', (req, res) => {
