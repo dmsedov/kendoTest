@@ -18,13 +18,14 @@ $(document).ready(function() {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
       },
+      destroy: {
+        url: 'http://localhost:8060/users/delete',
+        type: 'DELETE',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+      },
       parameterMap: function(data, type) {
-        if (type === 'create') {
           return kendo.stringify(data.models);
-        }
-        if (type === 'update') {
-          return kendo.stringify(data.models);
-        }
       },
     },
     schema: {
@@ -64,9 +65,23 @@ $(document).ready(function() {
         field: 'company',
         title: 'CompanyName',
       },
+      { command: [
+        {
+          name: 'destroy',
+          text: 'remove',
+          click: function myFunction(e) {
+            e.preventDefault();
+            alert("deleted pressed!");
+            const item = $("#grid").data("kendoGrid").dataItem($(this).closest("tr"));
+            console.log(item, 'this is item!');
+          },
+        },
+      ],
+      },
     ],
   });
   $("#grid").on("mousedown",".k-grid-cancel-changes", function(e){
     DataSource.read();
   });
+
 });

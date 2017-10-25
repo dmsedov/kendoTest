@@ -62,8 +62,7 @@ export default () => {
   });
 
   app.post('/users/create', (req, res) => {
-    // console.log(req, 'request');
-    console.log(req.body, 'request post');
+    Users.bulkCreate(req.body).then(data => res.json(data));
   });
 
   app.put('/users/update', (req, res) => {
@@ -79,8 +78,23 @@ export default () => {
       }));
       return acc;
     }, []);
-    Promise.all(promises).then(values => {
+    Promise.all(promises).then((values) => {
       res.json(...values);
+    });
+  });
+
+  app.delete('/users/delete', (req, res) => {
+    const promises = req.body.reduce((acc, user) => {
+      acc.push(new Promise((resolve, reject) => {
+        Users.destroy({
+          where: { user_id: user.user_id } })
+        .then(data => resolve(data), err => reject(err));
+      }));
+      return acc;
+    }, []);
+    Promise.all(promises).then((values) => {
+      console.log(values, 'destroy values');
+      res.json();
     });
   });
 
